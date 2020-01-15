@@ -25,6 +25,7 @@ public class CartasAdapter extends RecyclerView.Adapter<CartasAdapter.CartasHold
     private List<Cartas> cartasSeleccionadas;
     private List<CartasHolder> cartasHolders;
     private int intentos;
+    private int pares;
     private boolean shuffle;
 
     public CartasAdapter(List<Cartas> cartas, Context contexto){
@@ -33,6 +34,7 @@ public class CartasAdapter extends RecyclerView.Adapter<CartasAdapter.CartasHold
         this.cartasSeleccionadas = new ArrayList<>();
         this.cartasHolders = new ArrayList<>();
         intentos = 0;
+        pares = 0;
         shuffle = false;
     }
 
@@ -71,7 +73,18 @@ public class CartasAdapter extends RecyclerView.Adapter<CartasAdapter.CartasHold
                         if(cartasSeleccionadas.get(0).getImagen() == cartasSeleccionadas.get(1).getImagen()){
                             cartasSeleccionadas.removeAll(cartasSeleccionadas);
                             cartasHolders.removeAll(cartasHolders);
+                            pares++;
                             Toast.makeText(contexto, "Acertaste", Toast.LENGTH_SHORT).show();
+                            if(pares == 5) {
+                                Toast.makeText(contexto, "Ganaste!", Toast.LENGTH_LONG).show();
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ((Activity)contexto).recreate();
+                                    }
+                                },2500);
+                            }
                         }else{
                             intentos++;
                             String mensaje = "Fallaste, llevas " + intentos + " intentos de 4";
@@ -79,7 +92,9 @@ public class CartasAdapter extends RecyclerView.Adapter<CartasAdapter.CartasHold
                                 shuffle = true;
                                 mensaje.concat("\nSe te acabaron los intentos");
                             }
+
                             Toast.makeText(contexto, mensaje, Toast.LENGTH_SHORT).show();
+
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -92,16 +107,6 @@ public class CartasAdapter extends RecyclerView.Adapter<CartasAdapter.CartasHold
 
                         }//end else-if
 
-
-                        if (shuffle) {
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                }
-                            }, 2500);
-                        }
                     }//end if
                 }//end else-if
             }//end onClick()
